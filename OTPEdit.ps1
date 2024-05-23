@@ -14,12 +14,21 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName WindowsFormsIntegration
 Add-Type -AssemblyName PresentationFramework
 
-Import-Module "$PSScriptRoot\inc\NITWPFTools.psm1" -Force
-Import-Module "$PSScriptRoot\inc\New-WPFJobWindow.psm1" -Force
-Import-Module "$PSScriptRoot\inc\New-XMLSettingsDialog.psm1" -Force
-Import-Module "$PSScriptRoot\inc\OTPQRCodes.psm1" -Force
-Import-Module "$PSScriptRoot\inc\New-OtpQRCodeWindow.psm1" -Force
-Import-Module "$PSScriptRoot\Send-QRCodeEmail.ps1" -Force
+if ($PSScriptRoot -eq "")
+{
+	$includePath = "."
+}
+else
+{
+	$includePath = "$PSScriptRoot"
+}
+
+Import-Module "$includePath\inc\NITWPFTools.psm1" -Force
+Import-Module "$includePath\inc\New-WPFJobWindow.psm1" -Force
+Import-Module "$includePath\inc\New-XMLSettingsDialog.psm1" -Force
+Import-Module "$includePath\inc\OTPQRCodes.psm1" -Force
+Import-Module "$includePath\inc\New-OtpQRCodeWindow.psm1" -Force
+Import-Module "$includePath\Send-QRCodeEmail.ps1" -Force
 
 #Load Config
 $Global:Configxml = $Null 
@@ -64,8 +73,6 @@ $xaml = @'
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="5"/>
-            
-
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -73,74 +80,67 @@ $xaml = @'
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4">
+        <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"  />
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
 
-            <ToolBar ToolBarTray.IsLocked="True"  DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0"  >
-
+            <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0"  >
                 <Button  Margin="10,0,0,0" Name="ButtonRefresh">
                     <StackPanel Orientation="Horizontal">
                         <Image  Name="ImageRefresh" Width="32" Height="32" />
                         <TextBlock VerticalAlignment="Center" Margin="4,0,0,0">Refresh</TextBlock>
-
                     </StackPanel>
                 </Button>
                 <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">Filter:</TextBlock>
                 <TextBox Name="TextBoxADFilter" VerticalAlignment="Center"  Width="200" Margin="10,0,2,2">*</TextBox>
                 <Button VerticalAlignment="Center" Margin="10,0,0,0" Name="ButtonExportCSV">ExportCSV</Button>
-                <Button  Margin="10,0,0,0" Name="ButtonConfig">
+                <Button Margin="10,0,0,0" Name="ButtonConfig">
                     <StackPanel Orientation="Horizontal">
-                        <Image  Name="ImageConfig" Width="32" Height="32" />
+                        <Image Name="ImageConfig" Width="32" Height="32" />
                         <TextBlock VerticalAlignment="Center" Margin="4,0,0,0">Config</TextBlock>
                     </StackPanel>
                 </Button>
-
             </ToolBar>
 
-            <ToolBar ToolBarTray.IsLocked="True"   DockPanel.Dock="Top" VerticalAlignment="Top" Grid.Column="1" >
-                 <Button VerticalAlignment="Center"   Margin="10,0,0,0" Name="ButtonAbout">
+            <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" VerticalAlignment="Top" Grid.Column="1" >
+                 <Button VerticalAlignment="Center" Margin="10,0,0,0" Name="ButtonAbout">
                     <StackPanel Orientation="Horizontal">
-                        <Image  Name="ImageAbout" Width="32" Height="32" />
+                        <Image Name="ImageAbout" Width="32" Height="32" />
                     </StackPanel>
                 </Button>
-                <Button VerticalAlignment="Center"   Margin="10,0,0,0" Name="ButtonTwitter">
+                <Button VerticalAlignment="Center" Margin="10,0,0,0" Name="ButtonTwitter">
                     <StackPanel Orientation="Horizontal">
-                        <Image  Name="ImageTwitter" Width="32" Height="32" />
+                        <Image Name="ImageTwitter" Width="32" Height="32" />
                     </StackPanel>
                 </Button>
-
-
             </ToolBar>
-
         </Grid>
 
-
-        <TabControl Name ="TabControl" Margin="5" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <TabControl Name="TabControl" Margin="5" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TabItem Name="TabUserOTP" Header="User with OTP">
                     <ListView SelectionMode="Single" Name="ListViewOTPUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <ListView.View>
                 <GridView>
-                    <GridViewColumn  DisplayMemberBinding="{Binding SamAccountName}" Header="SamAccountName" />
-                    <GridViewColumn  DisplayMemberBinding="{Binding GivenName}" Header="Given names" />
-                    <GridViewColumn  DisplayMemberBinding="{Binding Surname}" Header="Surename" />
-                    <GridViewColumn  DisplayMemberBinding="{Binding UserPrincipalName}" Header="UserPrincipalName" />
-                    <GridViewColumn  DisplayMemberBinding="{Binding Mail}" Header="E-Mail" />    
+                    <GridViewColumn DisplayMemberBinding="{Binding SamAccountName}" Header="SamAccountName" />
+                    <GridViewColumn DisplayMemberBinding="{Binding GivenName}" Header="Given names" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Surname}" Header="Surename" />
+                    <GridViewColumn DisplayMemberBinding="{Binding UserPrincipalName}" Header="UserPrincipalName" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Mail}" Header="E-Mail" />    
                 </GridView>
             </ListView.View>
             </ListView>
             </TabItem>
             <TabItem Name="TabAllUsers" Header="All Users">
-                <ListView SelectionMode="Single"  Name="ListViewAllUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ListView SelectionMode="Single" Name="ListViewAllUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn  DisplayMemberBinding="{Binding SamAccountName}" Header="SamAccountName" />
-                            <GridViewColumn  DisplayMemberBinding="{Binding GivenName}" Header="Given names" />
-                            <GridViewColumn  DisplayMemberBinding="{Binding Surname}" Header="Surename" />
-                            <GridViewColumn  DisplayMemberBinding="{Binding UserPrincipalName}" Header="UserPrincipalName" />
-                            <GridViewColumn  DisplayMemberBinding="{Binding Mail}" Header="E-Mail" />
+                            <GridViewColumn DisplayMemberBinding="{Binding SamAccountName}" Header="SamAccountName" />
+                            <GridViewColumn DisplayMemberBinding="{Binding GivenName}" Header="Given names" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Surname}" Header="Surename" />
+                            <GridViewColumn DisplayMemberBinding="{Binding UserPrincipalName}" Header="UserPrincipalName" />
+                            <GridViewColumn DisplayMemberBinding="{Binding Mail}" Header="E-Mail" />
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -151,28 +151,25 @@ $xaml = @'
         <ListView Margin="5" Name="ListViewDevices" SelectionMode="Single" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
             <ListView.ContextMenu>
                 <ContextMenu Name="ContectMenueDevice">
-                    <MenuItem Name="AddDevice" Header="Add Device" />
-                    <MenuItem Name="ViewDevice" Header="View Device" />
-                    <MenuItem Name="RemoveDevice" Header="Remove Device" />
-                    <MenuItem Name="RemoveAllDevices" Header="Remove all Devices" />
+                    <MenuItem Name="AddDevice" Header="_Add Device" />
+                    <MenuItem Name="ViewDevice" Header="_View Device" />
+                    <MenuItem Name="RemoveDevice" Header="_Remove Device" />
+                    <MenuItem Name="RemoveAllDevices" Header="Remove A_ll Devices" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn  Width="350"  Header="OTP" />
+                    <GridViewColumn Width="350" Header="OTP" />
                 </GridView>
             </ListView.View>
         </ListView>
 
-        <!-- StatusBar  Background="LightGreen" Grid.Row="3" Grid.ColumnSpan="3" Margin="5">
+        <!-- StatusBar Background="LightGreen" Grid.Row="3" Grid.ColumnSpan="3" Margin="5">
             <Label Content="Status: OK"></Label>
         </StatusBar -->
-
     </Grid>
-   
 </Window>
 '@
-
 
 function Convert-XAMLtoWindow
 {
@@ -237,11 +234,15 @@ function Update-Users{
       $ODTDefinitionString
     )
     
+    if ($filter -ne "*")
+    {
+        $filter = "*$filter*";
+    }
    
     if($AllUserTab)
     {
       Write-Verbose "Update List"
-      $Userlist = @(Get-AdUser -Filter $('SamAccountName -like "' + $filter + '"') -server $LDAPServer -Properties surname,givenname,SamAccountName,Mail,$AttributeStore | Select-Object -Property surname,givenname,SamAccountName,UserPrincipalName,Mail,$AttributeStore)
+      $Userlist = @(Get-AdUser -Filter $('SamAccountName -like "' + $filter + '" -or sn -like"' + $filter + '"  -or givenName -like"' + $filter + '" -or displayname -like"' + $filter + '"') -server $LDAPServer -Properties surname,givenname,SamAccountName,Mail,$AttributeStore | Select-Object -Property surname,givenname,SamAccountName,UserPrincipalName,Mail,$AttributeStore)
       
       #$Userlist | Where-Object {$_.mail -ne $null} | % {Add-Member -InputObject $_ -NotePropertyName "EMail" -NotePropertyValue $_.mail -force} 
 
@@ -249,7 +250,7 @@ function Update-Users{
 
     } else
     {
-      $ldapFilter = '(&(SamAccountName='+$filter+')('+$AttributeStore+'='+$ODTDefinitionString+'*))'
+      $ldapFilter = '(&(|(SamAccountName=' + $filter + ')(sn=' + $filter + ')(givenName=' + $filter + ')(displayname=' + $filter.Replace(" ", "*") + '))(' + $AttributeStore + '=' + $ODTDefinitionString + '*))'
       #Write-Host  $ldapFilter
       $Userlist  = @((Get-AdUser -LdapFilter $ldapFilter -server $LDAPServer  -Properties surname,givenname,SamAccountName,Mail,$AttributeStore | Select-Object -Property surname,givenname,SamAccountName,UserPrincipalName,Mail,$AttributeStore )) 
       
@@ -272,9 +273,7 @@ function Update-Users{
   Clear-Runspace -RunspacePool $pool
 }
 
-
 $window = Convert-XAMLtoWindow -XAML $xaml
-
 
 #region Define Event Handlers
 # Right-Click XAML Text and choose WPF/Attach Events to
@@ -467,7 +466,8 @@ $window.ButtonExportCSV.add_Click{
 
   if($dlg.ShowDialog() -eq 'Ok'){
     $filter = $window.TextBoxADFilter.Text
-    $ldapFilter = '(&(SamAccountName='+$filter+')('+$AttributeStore+'='+$ODTDefinitionString+'*))'
+    $ldapFilter = '(&(SamAccountName=' + $filter + ')(' + $AttributeStore + '=' + $ODTDefinitionString + '*))'
+    
     $Userlist  = @((Get-AdUser -LdapFilter $ldapFilter -server $LDAPServer -Properties surname,givenname,SamAccountName,mail,$AttributeStore )) 
     #Get Devices and Device Count
     foreach($user in $userlist){
@@ -492,7 +492,7 @@ $window.OtpWindow.add_Loaded{
       New-Item -Path (Split-Path $OTPConfigFile -Parent) -ItemType Directory -Force
     }
     #LoadMainConfig
-    $Global:Configxml.Load($($PSScriptRoot + "\OTPEditConfig.xml"))
+    $Global:Configxml.Load($($includePath + "\OTPEditConfig.xml"))
     $Global:Configxml = New-XMLSettingsDialog -Title "Settings" -SettingsXml $Configxml -EntryKey "OtpEditConfig" -ParentWindow $window
     $Global:Configxml.Save($OTPConfigFile)
   }  else 
@@ -639,61 +639,63 @@ $window.AddDevice.add_Click{
           # Send QRCode
           #
 
-          $res = Out-Message -Message $("Send E-Mail to User $User (" + $Result.EMail +")") -Type Information -ParentWindow $window -DisableCancel $false
+          if($Global:Configxml.OtpEditConfig.SMTPServer.InnerText -ne "")
+          {
+              $res = Out-Message -Message $("Send E-Mail to User $User (" + $Result.EMail +")") -Type Information -ParentWindow $window -DisableCancel $false
           
-          if($res -eq "OK"){
+              if($res -eq "OK"){
           
-            [int] $Port = $($Global:Configxml.OtpEditConfig.SMTPPort.InnerText)
+                [int] $Port = $($Global:Configxml.OtpEditConfig.SMTPPort.InnerText)
 
-            Send-QRCodeEMail -SMTPPort $Port  -SMPTServer $($Global:Configxml.OtpEditConfig.SMTPServer.InnerText) `
-            -From $($Global:Configxml.OtpEditConfig.SMTPMailFrom.InnerText) `
-            -Subject $($Global:Configxml.OtpEditConfig.SMTPSubject.InnerText) -SMTPUseSSL ($Global:Configxml.OtpEditConfig.SMTPUseSSL.InnerText -eq "true") `
-            -SMTPMailuser $($Global:Configxml.OtpEditConfig.SMTPUser.InnerText) -SMTPMailPassword $($Global:Configxml.OtpEditConfig.SMTPPassword.InnerText) `
-            -To $Result.EMail -QRCode $result.QRCode -UserName $User -Secret $Result.Secret -DeviceName $Result.Device -UserPrincipleName $Result.UserPrincipleName
+                Send-QRCodeEMail -SMTPPort $Port  -SMPTServer $($Global:Configxml.OtpEditConfig.SMTPServer.InnerText) `
+                -From $($Global:Configxml.OtpEditConfig.SMTPMailFrom.InnerText) `
+                -Subject $($Global:Configxml.OtpEditConfig.SMTPSubject.InnerText) -SMTPUseSSL ($Global:Configxml.OtpEditConfig.SMTPUseSSL.InnerText -eq "true") `
+                -SMTPMailuser $($Global:Configxml.OtpEditConfig.SMTPUser.InnerText) -SMTPMailPassword $($Global:Configxml.OtpEditConfig.SMTPPassword.InnerText) `
+                -To $Result.EMail -QRCode $result.QRCode -UserName $User -Secret $Result.Secret -DeviceName $Result.Device -UserPrincipleName $Result.UserPrincipleName
           
-            <#
-            
-                $ImageBase64 = [Convert]::ToBase64String($result.QRCode)
-
-                $Mailuser =  $Global:Configxml.OtpEditConfig.SMTPUser.InnerText
-                $Mailpwd = $Global:Configxml.OtpEditConfig.SMTPPassword.InnerText
-                $MailPort = $Global:Configxml.OtpEditConfig.SMTPPort.InnerText
-            
-                $secure_pwd = $Mailpwd  | ConvertTo-SecureString -AsPlainText -Force
-
-                $creds = New-Object System.Management.Automation.PSCredential -ArgumentList  $Mailuser, $secure_pwd
-
-                #
-                # Als als html Mail
-                #
-                [String] $htmlDoc = $null
-                #Bachground
-
-                $htmlDoc += '<style>'
-                $htmlDoc += 'body {background-color:#d2E0EF;}'
-                $htmlDoc += 'h1   {color: blue;}'
-                #$htmlDoc += 'img {width: 50%;height: auto;}'
-                $htmlDoc += 'strong    {color:blue;}'
-                $htmlDoc += '* {font-family: Consolas;}'
-                $htmlDoc += '</style>'
-                $htmlDoc += '</head>'
-                $htmlDoc += '<body>'
-
-                #Headline
-                $htmlDoc += '<h1>OTP QR Code for: ' + $User + '</h1>'
-                $htmlDoc += '<h2>Please scan the code with an Authenticator (Microsoft, Google etc.)</h2>'
-
-                $htmlDoc += '<img src="data:image/png;base64,'+ $ImageBase64 +'" />'
-                $htmlDoc += '</body>'
-                #$htmlDoc | out-file C:\Profiles\Administrator\Desktop\test2.html
-
-                Send-MailMessage -From $($Global:Configxml.OtpEditConfig.SMTPMailFrom.InnerText)  -To 'Andreas <a.nick@nick-it.de>' -Subject  $($Global:Configxml.OtpEditConfig.SMTPSubject.InnerText)  `
-                -SmtpServer  $($Global:Configxml.OtpEditConfig.SMTPServer.InnerText) -Port  $MailPort -Credential $creds `
-                -Body $htmlDoc -UseSsl:($Global:Configxml.OtpEditConfig.SMTPUseSSL.InnerText -eq "true")  -Encoding UTF8 -BodyAsHtml -ErrorAction Stop
-
-            #>
-          }
-        
+                <#
+                
+                    $ImageBase64 = [Convert]::ToBase64String($result.QRCode)
+    
+                    $Mailuser =  $Global:Configxml.OtpEditConfig.SMTPUser.InnerText
+                    $Mailpwd = $Global:Configxml.OtpEditConfig.SMTPPassword.InnerText
+                    $MailPort = $Global:Configxml.OtpEditConfig.SMTPPort.InnerText
+                
+                    $secure_pwd = $Mailpwd  | ConvertTo-SecureString -AsPlainText -Force
+    
+                    $creds = New-Object System.Management.Automation.PSCredential -ArgumentList  $Mailuser, $secure_pwd
+    
+                    #
+                    # Als als html Mail
+                    #
+                    [String] $htmlDoc = $null
+                    #Bachground
+    
+                    $htmlDoc += '<style>'
+                    $htmlDoc += 'body {background-color:#d2E0EF;}'
+                    $htmlDoc += 'h1   {color: blue;}'
+                    #$htmlDoc += 'img {width: 50%;height: auto;}'
+                    $htmlDoc += 'strong    {color:blue;}'
+                    $htmlDoc += '* {font-family: Consolas;}'
+                    $htmlDoc += '</style>'
+                    $htmlDoc += '</head>'
+                    $htmlDoc += '<body>'
+    
+                    #Headline
+                    $htmlDoc += '<h1>OTP QR Code for: ' + $User + '</h1>'
+                    $htmlDoc += '<h2>Please scan the code with an Authenticator (Microsoft, Google etc.)</h2>'
+    
+                    $htmlDoc += '<img src="data:image/png;base64,'+ $ImageBase64 +'" />'
+                    $htmlDoc += '</body>'
+                    #$htmlDoc | out-file C:\Profiles\Administrator\Desktop\test2.html
+    
+                    Send-MailMessage -From $($Global:Configxml.OtpEditConfig.SMTPMailFrom.InnerText)  -To 'Andreas <a.nick@nick-it.de>' -Subject  $($Global:Configxml.OtpEditConfig.SMTPSubject.InnerText)  `
+                    -SmtpServer  $($Global:Configxml.OtpEditConfig.SMTPServer.InnerText) -Port  $MailPort -Credential $creds `
+                    -Body $htmlDoc -UseSsl:($Global:Configxml.OtpEditConfig.SMTPUseSSL.InnerText -eq "true")  -Encoding UTF8 -BodyAsHtml -ErrorAction Stop
+    
+                #>
+              }
+            }
         } catch {
           Out-Message -Message $($_ | Out-String) -Type Error -ParentWindow $window
         }
